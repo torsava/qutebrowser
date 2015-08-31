@@ -66,13 +66,14 @@ def pytest_collection_modifyitems(items):
                     True, reason="No DISPLAY available")
                 item.add_marker(skip_marker)
 
-        module_path = os.path.relpath(
-            item.module.__file__,
-            os.path.commonprefix([__file__, item.module.__file__]))
+        if hasattr(item, 'module'):
+            module_path = os.path.relpath(
+                item.module.__file__,
+                os.path.commonprefix([__file__, item.module.__file__]))
 
-        module_root_dir = os.path.split(module_path)[0]
-        if module_root_dir == 'integration':
-            item.add_marker(pytest.mark.integration)
+            module_root_dir = os.path.split(module_path)[0]
+            if module_root_dir == 'integration':
+                item.add_marker(pytest.mark.integration)
 
 
 def pytest_runtest_setup(item):
