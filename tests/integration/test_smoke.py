@@ -23,7 +23,10 @@
 import sys
 import subprocess
 
+import pytest
 
+
+@pytest.mark.not_frozen
 def test_smoke():
     argv = [sys.executable, '-m', 'qutebrowser', '--debug', '--no-err-windows',
             '--nowindow', '--temp-basedir', 'about:blank', ':later 500 quit']
