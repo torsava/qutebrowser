@@ -22,6 +22,12 @@
 import functools
 import types
 import traceback
+import getpass
+import socket
+import textwrap
+import os.path
+import cProfile
+import sys
 
 try:
     import hunter
@@ -29,12 +35,19 @@ except ImportError:
     hunter = None
 
 from qutebrowser.browser.network import qutescheme
-from qutebrowser.utils import log, objreg, usertypes, message, debug
+from qutebrowser.utils import (log, objreg, usertypes, message, debug,
+                               standarddir)
 from qutebrowser.commands import cmdutils, runners, cmdexc
 from qutebrowser.config import style
-from qutebrowser.misc import consolewidget
+from qutebrowser.misc import consolewidget, guiprocess
 
-from PyQt5.QtCore import QUrl
+from PyQt5.QtCore import pyqtSlot, QUrl, QObject, QTimer
+from PyQt5.QtWidgets import QApplication
+
+
+def init():
+    profiler = Profiler(app=QApplication.instance())
+    objreg.register('profiler', profiler)
 
 
 @cmdutils.register(maxsplit=1, no_cmd_split=True, win_id='win_id')
@@ -187,3 +200,112 @@ def debug_pyeval(s):
     tabbed_browser = objreg.get('tabbed-browser', scope='window',
                                 window='last-focused')
     tabbed_browser.openurl(QUrl('qute:pyeval'), newtab=True)
+
+
+class Profiler(QObject):
+
+    def __init__(self, app, parent=None):
+        super().__init__(parent)
+        self._app = app
+        self._proc = None
+        self._tempdir = os.path.join(standarddir.temp(),
+                                     'profiling-{}'.format(getpass.getuser()))
+        try:
+            os.mkdir(self._tempdir)
+        except FileExistsError:
+            pass
+
+        snakeviz_script = textwrap.dedent("""
+            import sys
+            import tornado.ioloop
+            from snakeviz import main
+
+            main.app.listen(sys.argv[1])
+            tornado.ioloop.IOLoop.instance().start()
+        """.strip('\n'))
+        self._snakeviz_script_path = os.path.join(self._tempdir, 'run.py')
+        with open(self._snakeviz_script_path, 'w') as f:
+            f.write(snakeviz_script)
+
+    def _get_port(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(('localhost', 0))
+        addr, port = s.getsockname()
+        s.close()
+        return port
+
+    @pyqtSlot()
+    def cleanup_proc(self):
+        self._proc.terminate()
+        self._proc.deleteLater()
+        self._proc = None
+
+    def _show_snakeviz(self, win_id):
+        """Helper for debug_profile to show the profile with SnakeViz."""
+        try:
+            import snakeviz
+        except ImportError:
+            raise cmdexc.CommandError("SnakeViz was not found!")
+
+        if getattr(sys, 'frozen', False):
+            raise cmdexc.CommandError("Can't run :profile-show when frozen!")
+        elif self._app.profile is None:
+            raise cmdexc.CommandError("No profile recorded!")
+
+        port = self._get_port()
+
+        self._proc = guiprocess.GUIProcess(win_id, 'SnakeViz',
+                                     parent=QApplication.instance())
+        self._proc.finished.connect(self.cleanup_proc)
+        self._proc.start(
+            sys.executable, [self._snakeviz_script_path, str(port)])
+
+        filename = os.path.join(self._tempdir, 'profile')
+        self._app.profile.dump_stats(filename)
+
+        browser = objreg.get('tabbed-browser', scope='window', window=win_id)
+        url = QUrl('http://localhost:{}/snakeviz/{}'.format(port, filename))
+        QTimer.singleShot(500, lambda: browser.tabopen(url, explicit=True,
+                                                       background=False))
+
+    @cmdutils.register(debug=True, win_id='win_id', instance='profiler')
+    def debug_profile(self, win_id, cmd, arg=None):
+        """Profile qutebrowser's execution.
+
+        Sub-commands:
+
+        * :debug-profile start - Start profiling.
+        * :debug-profile stop - Stop profiling.
+        * :debug-profile reset - Reset collected profiling data.
+        * :debug-profile dump <filename> - Dump profile data to the given file.
+        * :debug-profile show - Show profile data (needs SnakeViz).
+        * :debug-profile kill - Kill running SnakeViz process.
+
+        Args:
+            cmd: The command (start/stop/dump/show)
+            arg: The filename for dump, otherwise unused.
+            force: Force restarting profile/overriding file.
+        """
+        if self._app.profile is None and cmd != 'start':
+            raise cmdexc.CommandError("Profiling was never started!")
+
+        if cmd == 'start':
+            if self._app.profile is None:
+                self._app.profile = cProfile.Profile()
+            self._app.profile.enable()
+        elif cmd == 'stop':
+            self._app.profile.disable()
+        elif cmd == 'reset':
+            self._app.profile = None
+        elif cmd == 'dump':
+            if arg is None:
+                raise cmdexc.CommandError("No filename given!")
+            self._app.profile.dump_stats(os.path.expanduser(arg))
+        elif cmd == 'show':
+            self._show_snakeviz(win_id)
+        elif cmd == 'kill':
+            if self._proc is None:
+                raise cmdexc.CommandError("No process running!")
+            self.cleanup_proc()
+        else:
+            raise cmdexc.commandError("Unknown sub-command {}!".format(cmd))

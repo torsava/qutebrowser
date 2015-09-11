@@ -48,10 +48,9 @@ from qutebrowser.browser import urlmarks, cookies, cache, adblock, history
 from qutebrowser.browser.network import qutescheme, proxy, networkmanager
 from qutebrowser.mainwindow import mainwindow
 from qutebrowser.misc import readline, ipc, savemanager, sessions, crashsignal
-from qutebrowser.misc import utilcmds  # pylint: disable=unused-import
+from qutebrowser.misc import utilcmds
 from qutebrowser.utils import (log, version, message, utils, qtutils, urlutils,
                                objreg, usertypes, standarddir, error, debug)
-# We import utilcmds to run the cmdutils.register decorators.
 
 
 qApp = None
@@ -425,6 +424,8 @@ def _init_modules(args, crash_handler):
 def _init_late_modules(args):
     """Initialize modules which can be inited after the window is shown."""
     try:
+        log.init.debug("Initializing utilcmds...")
+        utilcmds.init()
         log.init.debug("Reading web history...")
         reader = objreg.get('web-history').async_read()
         with debug.log_time(log.init, 'Reading history'):
@@ -683,6 +684,7 @@ class Application(QApplication):
 
     Attributes:
         _args: ArgumentParser instance.
+        profile: Used for :debug-profile.
     """
 
     def __init__(self, args):
@@ -702,6 +704,7 @@ class Application(QApplication):
         objreg.register('app', self)
 
         self.launch_time = datetime.datetime.now()
+        self.profile = None
 
     def __repr__(self):
         return utils.get_repr(self)
