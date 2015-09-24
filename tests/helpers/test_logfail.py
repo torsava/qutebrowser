@@ -23,7 +23,7 @@
 import logging
 
 import pytest
-import pytest_capturelog  # pylint: disable=import-error
+import pytest_catchlog  # pylint: disable=import-error
 
 
 def test_log_debug():
@@ -80,8 +80,8 @@ def test_caplog_bug_workaround_2():
 
     There should be only one capturelog handler.
     """
-    caplog_handler = None
+    catchlog_handler = None
     for h in logging.getLogger().handlers:
-        if isinstance(h, pytest_capturelog.CaptureLogHandler):
-            assert caplog_handler is None
-            caplog_handler = h
+        if isinstance(h, pytest_catchlog.RecordingHandler):
+            assert catchlog_handler is None
+            catchlog_handler = h

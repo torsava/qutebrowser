@@ -25,7 +25,7 @@ import itertools
 import sys
 
 import pytest
-import pytest_capturelog  # pylint: disable=import-error
+import pytest_catchlog  # pylint: disable=import-error
 
 from qutebrowser.utils import log
 
@@ -63,7 +63,7 @@ def restore_loggers():
         h.close()
     root_logger.setLevel(original_logging_level)
     for h in root_handlers:
-        if not isinstance(h, pytest_capturelog.CaptureLogHandler):
+        if not isinstance(h, pytest_catchlog.RecordingHandler):
             # https://github.com/The-Compiler/qutebrowser/issues/856
             root_logger.addHandler(h)
     logging._acquireLock()
