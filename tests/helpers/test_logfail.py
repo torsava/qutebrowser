@@ -59,13 +59,6 @@ def test_log_expected_logger_wrong_level(caplog):
             logging.getLogger(logger).critical('foo')
 
 
-def test_log_expected_wrong_logger(caplog):
-    logger = 'logfail_test_logger'
-    with pytest.raises(pytest.fail.Exception):
-        with caplog.at_level(logging.ERROR):
-            logging.error('foo')
-
-
 @pytest.fixture
 def skipping_fixture():
     pytest.skip("Skipping to test caplog workaround.")
