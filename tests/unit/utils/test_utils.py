@@ -241,7 +241,7 @@ class TestActuteWarning:
         mocker.patch('qutebrowser.utils.utils.open', side_effect=OSError,
                      create=True)
 
-        with caplog.atLevel(logging.ERROR, 'init'):
+        with caplog.at_level(logging.ERROR):
             utils.actute_warning()
 
         assert len(caplog.records()) == 1
@@ -657,7 +657,7 @@ class TestPreventExceptions:
 
     def test_raising(self, caplog):
         """Test with a raising function."""
-        with caplog.atLevel(logging.ERROR, 'misc'):
+        with caplog.at_level(logging.ERROR):
             ret = self.func_raising()
         assert ret == 42
         assert len(caplog.records()) == 1
@@ -671,7 +671,7 @@ class TestPreventExceptions:
 
     def test_not_raising(self, caplog):
         """Test with a non-raising function."""
-        with caplog.atLevel(logging.ERROR, 'misc'):
+        with caplog.at_level(logging.ERROR):
             ret = self.func_not_raising()
         assert ret == 23
         assert not caplog.records()
@@ -682,7 +682,7 @@ class TestPreventExceptions:
 
     def test_predicate_true(self, caplog):
         """Test with a True predicate."""
-        with caplog.atLevel(logging.ERROR, 'misc'):
+        with caplog.at_level(logging.ERROR):
             ret = self.func_predicate_true()
         assert ret == 42
         assert len(caplog.records()) == 1
@@ -693,7 +693,7 @@ class TestPreventExceptions:
 
     def test_predicate_false(self, caplog):
         """Test with a False predicate."""
-        with caplog.atLevel(logging.ERROR, 'misc'):
+        with caplog.at_level(logging.ERROR):
             with pytest.raises(Exception):
                 self.func_predicate_false()
         assert not caplog.records()

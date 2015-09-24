@@ -357,7 +357,7 @@ class TestListen:
 
     @pytest.mark.posix
     def test_atime_update_no_name(self, qtbot, caplog, ipc_server):
-        with caplog.atLevel(logging.ERROR):
+        with caplog.at_level(logging.ERROR):
             ipc_server.update_atime()
 
         records = caplog.records()
@@ -498,7 +498,7 @@ def test_invalid_data(qtbot, ipc_server, connected_socket, caplog, data, msg):
     got_args_spy = QSignalSpy(ipc_server.got_args)
 
     signals = [ipc_server.got_invalid_data, connected_socket.disconnected]
-    with caplog.atLevel(logging.ERROR):
+    with caplog.at_level(logging.ERROR):
         with qtbot.waitSignals(signals, raising=True):
             connected_socket.write(data)
 
@@ -596,7 +596,7 @@ def test_timeout(qtbot, caplog, qlocalsocket, ipc_server):
     with qtbot.waitSignal(ipc_server._server.newConnection, raising=True):
         qlocalsocket.connectToServer('qute-test')
 
-    with caplog.atLevel(logging.ERROR):
+    with caplog.at_level(logging.ERROR):
         with qtbot.waitSignal(qlocalsocket.disconnected, raising=True,
                               timeout=5000):
             pass
@@ -613,7 +613,7 @@ def test_ipcserver_socket_none(ipc_server, caplog, method, args):
     func = getattr(ipc_server, method)
     assert ipc_server._socket is None
 
-    with caplog.atLevel(logging.WARNING):
+    with caplog.at_level(logging.WARNING):
         func(*args)
 
     records = caplog.records()
@@ -795,7 +795,7 @@ class TestSendOrListen:
             QLocalSocket.ConnectionRefusedError,  # error() gets called twice
         ]
 
-        with caplog.atLevel(logging.ERROR):
+        with caplog.at_level(logging.ERROR):
             with pytest.raises(ipc.Error):
                 ipc.send_or_listen(args)
 
@@ -820,7 +820,7 @@ class TestSendOrListen:
         err = QAbstractSocket.SocketResourceError
         qlocalserver_mock().serverError.return_value = err
 
-        with caplog.atLevel(logging.ERROR):
+        with caplog.at_level(logging.ERROR):
             with pytest.raises(ipc.Error):
                 ipc.send_or_listen(args)
 

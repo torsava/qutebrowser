@@ -174,7 +174,7 @@ def test_start_logging(fake_proc, caplog):
     """Make sure that starting logs the executed commandline."""
     cmd = 'does_not_exist'
     args = ['arg', 'arg with spaces']
-    with caplog.atLevel(logging.DEBUG):
+    with caplog.at_level(logging.DEBUG):
         fake_proc.start(cmd, args)
     msgs = [e.msg for e in caplog.records()]
     assert msgs == ["Starting process.",
@@ -183,7 +183,7 @@ def test_start_logging(fake_proc, caplog):
 
 def test_error(qtbot, proc, caplog, guiprocess_message_mock):
     """Test the process emitting an error."""
-    with caplog.atLevel(logging.ERROR, 'message'):
+    with caplog.at_level(logging.ERROR):
         with qtbot.waitSignal(proc.error, raising=True, timeout=5000):
             proc.start('this_does_not_exist_either', [])
 

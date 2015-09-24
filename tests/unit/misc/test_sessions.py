@@ -819,7 +819,7 @@ class TestSessionDelete:
         tmpdir.chmod(0o555)  # unwritable
 
         with pytest.raises(cmdexc.CommandError) as excinfo:
-            with caplog.atLevel(logging.ERROR):
+            with caplog.at_level(logging.ERROR):
                 sess_man.session_delete('foo')
 
         assert str(excinfo.value).startswith('Error while deleting session: ')

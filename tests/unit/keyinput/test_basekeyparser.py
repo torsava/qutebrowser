@@ -161,7 +161,7 @@ class TestReadConfig:
             0, supports_count=False, supports_chains=False)
         kp._warn_on_keychains = warn_on_keychains
 
-        with caplog.atLevel(logging.WARNING):
+        with caplog.at_level(logging.WARNING):
             kp.read_config('normal')
 
         assert bool(caplog.records()) == warn_on_keychains

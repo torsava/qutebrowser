@@ -54,7 +54,7 @@ def test_set_register_stylesheet(delete, qtbot, config_stub, caplog):
     config_stub.data = {'fonts': {'foo': 'bar'}, 'colors': {}}
     obj = Obj("{{ font['foo'] }}")
 
-    with caplog.atLevel(9):  # VDEBUG
+    with caplog.at_level(9):  # VDEBUG
         style.set_register_stylesheet(obj)
 
     records = caplog.records()
@@ -94,7 +94,7 @@ class TestColorDict:
 
     def test_key_error(self, caplog):
         d = style.ColorDict()
-        with caplog.atLevel(logging.ERROR):
+        with caplog.at_level(logging.ERROR):
             d['foo']  # pylint: disable=pointless-statement
         records = caplog.records()
         assert len(records) == 1

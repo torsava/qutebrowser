@@ -86,7 +86,7 @@ class TestLogTime:
     def test_duration(self, caplog):
         logger_name = 'qt-tests'
 
-        with caplog.atLevel(logging.DEBUG, logger_name):
+        with caplog.at_level(logging.DEBUG):
             with debug.log_time(logger_name, action='foobar'):
                 time.sleep(0.1)
 
@@ -104,7 +104,7 @@ class TestLogTime:
         """Test with an explicit logger instead of a name."""
         logger_name = 'qt-tests'
 
-        with caplog.atLevel(logging.DEBUG, logger_name):
+        with caplog.at_level(logging.DEBUG):
             with debug.log_time(logging.getLogger(logger_name)):
                 pass
 
@@ -118,7 +118,7 @@ class TestLogTime:
             assert arg == 1
             assert kwarg == 2
 
-        with caplog.atLevel(logging.DEBUG, logger_name):
+        with caplog.at_level(logging.DEBUG):
             func(1, kwarg=2)
 
         records = caplog.records()

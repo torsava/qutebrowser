@@ -52,7 +52,7 @@ def test_no_err_windows(caplog, exc, name, exc_text):
     try:
         raise exc
     except Exception as e:
-        with caplog.atLevel(logging.ERROR):
+        with caplog.at_level(logging.ERROR):
             error.handle_fatal_exc(e, Args(no_err_windows=True), 'title',
                                    pre_text='pre', post_text='post')
 
