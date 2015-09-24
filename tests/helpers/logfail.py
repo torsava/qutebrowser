@@ -24,7 +24,7 @@ import logging
 import pytest
 
 try:
-    import pytest_capturelog as caplog_mod
+    import pytest_catchlog as catchlog_mod
 except ImportError:
     # When using pytest for pyflakes/pep8/..., the plugin won't be available
     # but conftest.py will still be loaded.
@@ -47,17 +47,17 @@ class LogFailHandler(logging.Handler):
         root_logger = logging.getLogger()
 
         for h in root_logger.handlers:
-            if isinstance(h, caplog_mod.CaptureLogHandler):
+            if isinstance(h, catchlog_mod.RecordingHandler):
                 caplog_handler = h
                 break
         else:
-            # The CaptureLogHandler is not available anymore during fixture
+            # The RecordingHandler is not available anymore during fixture
             # teardown, so we ignore logging messages emitted there..
             return
 
         if (logger.level == record.levelno or
                 caplog_handler.level == record.levelno):
-            # caplog.atLevel(...) was used with the level of this message, i.e.
+            # caplog.at_level(...) was used with the level of this message, i.e.
             # it was expected.
             return
         if record.levelno < self._min_level:
@@ -86,12 +86,12 @@ def caplog_bug_workaround(request):
     multiple CaptureLogHandlers.
     """
     yield
-    if caplog_mod is None:
+    if catchlog_mod is None:
         return
 
     root_logger = logging.getLogger()
     caplog_handlers = [h for h in root_logger.handlers
-                       if isinstance(h, caplog_mod.CaptureLogHandler)]
+                       if isinstance(h, catchlog_mod.RecordingHandler)]
 
     for h in caplog_handlers:
         root_logger.removeHandler(h)
