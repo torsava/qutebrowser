@@ -46,6 +46,8 @@ class LogFailHandler(logging.Handler):
         logger = logging.getLogger(record.name)
         root_logger = logging.getLogger()
 
+        import pdb; pdb.set_trace()
+
         for h in root_logger.handlers:
             if isinstance(h, catchlog_mod.RecordingHandler):
                 caplog_handler = h
@@ -53,6 +55,7 @@ class LogFailHandler(logging.Handler):
         else:
             # The RecordingHandler is not available anymore during fixture
             # teardown, so we ignore logging messages emitted there..
+            raise Exception
             return
 
         if (logger.level == record.levelno or
