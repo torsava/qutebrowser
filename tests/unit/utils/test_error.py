@@ -56,7 +56,7 @@ def test_no_err_windows(caplog, exc, name, exc_text):
             error.handle_fatal_exc(e, Args(no_err_windows=True), 'title',
                                    pre_text='pre', post_text='post')
 
-    records = caplog.records()
+    records = caplog.records
     assert len(records) == 1
 
     expected = [

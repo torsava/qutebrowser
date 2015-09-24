@@ -109,7 +109,7 @@ def test_logging(caplog, objects, tabbed_browser, index_of, verb):
     with caplog.at_level(logging.DEBUG):
         objects.signaller.signal.emit('foo')
 
-    records = caplog.records()
+    records = caplog.records
     assert len(records) == 1
     expected_msg = "{}: filtered_signal('foo') (tab {})".format(verb, index_of)
     assert records[0].msg == expected_msg
@@ -123,7 +123,7 @@ def test_no_logging(caplog, objects, tabbed_browser, index_of):
     with caplog.at_level(logging.DEBUG):
         objects.signaller.statusbar_message.emit('foo')
 
-    assert not caplog.records()
+    assert not caplog.records
 
 
 def test_runtime_error(objects, tabbed_browser):

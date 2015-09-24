@@ -57,7 +57,7 @@ def test_set_register_stylesheet(delete, qtbot, config_stub, caplog):
     with caplog.at_level(9):  # VDEBUG
         style.set_register_stylesheet(obj)
 
-    records = caplog.records()
+    records = caplog.records
     assert len(records) == 1
     assert records[0].message == 'stylesheet for Obj: font: bar;'
 
@@ -96,7 +96,7 @@ class TestColorDict:
         d = style.ColorDict()
         with caplog.at_level(logging.ERROR):
             d['foo']  # pylint: disable=pointless-statement
-        records = caplog.records()
+        records = caplog.records
         assert len(records) == 1
         assert records[0].message == 'No color defined for foo!'
 

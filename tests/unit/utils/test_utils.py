@@ -244,8 +244,8 @@ class TestActuteWarning:
         with caplog.at_level(logging.ERROR):
             utils.actute_warning()
 
-        assert len(caplog.records()) == 1
-        assert caplog.records()[0].message == 'Failed to read Compose file'
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message == 'Failed to read Compose file'
         out, _err = capsys.readouterr()
         assert not out
 
@@ -660,9 +660,9 @@ class TestPreventExceptions:
         with caplog.at_level(logging.ERROR):
             ret = self.func_raising()
         assert ret == 42
-        assert len(caplog.records()) == 1
+        assert len(caplog.records) == 1
         expected = 'Error in test_utils.TestPreventExceptions.func_raising'
-        actual = caplog.records()[0].message
+        actual = caplog.records[0].message
         assert actual == expected
 
     @utils.prevent_exceptions(42)
@@ -674,7 +674,7 @@ class TestPreventExceptions:
         with caplog.at_level(logging.ERROR):
             ret = self.func_not_raising()
         assert ret == 23
-        assert not caplog.records()
+        assert not caplog.records
 
     @utils.prevent_exceptions(42, True)
     def func_predicate_true(self):
@@ -685,7 +685,7 @@ class TestPreventExceptions:
         with caplog.at_level(logging.ERROR):
             ret = self.func_predicate_true()
         assert ret == 42
-        assert len(caplog.records()) == 1
+        assert len(caplog.records) == 1
 
     @utils.prevent_exceptions(42, False)
     def func_predicate_false(self):
@@ -696,7 +696,7 @@ class TestPreventExceptions:
         with caplog.at_level(logging.ERROR):
             with pytest.raises(Exception):
                 self.func_predicate_false()
-        assert not caplog.records()
+        assert not caplog.records
 
 
 class Obj:

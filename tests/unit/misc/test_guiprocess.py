@@ -176,7 +176,7 @@ def test_start_logging(fake_proc, caplog):
     args = ['arg', 'arg with spaces']
     with caplog.at_level(logging.DEBUG):
         fake_proc.start(cmd, args)
-    msgs = [e.msg for e in caplog.records()]
+    msgs = [e.msg for e in caplog.records]
     assert msgs == ["Starting process.",
                     "Executing: does_not_exist arg 'arg with spaces'"]
 

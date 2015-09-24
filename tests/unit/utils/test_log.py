@@ -240,8 +240,8 @@ class TestHideQtWarning:
         with log.hide_qt_warning("World", 'qt-tests'):
             with caplog.at_level(logging.WARNING):
                 logger.warning("Hello World")
-        assert len(caplog.records()) == 1
-        record = caplog.records()[0]
+        assert len(caplog.records) == 1
+        record = caplog.records[0]
         assert record.levelname == 'WARNING'
         assert record.message == "Hello World"
 
@@ -250,18 +250,18 @@ class TestHideQtWarning:
         with log.hide_qt_warning("Hello", 'qt-tests'):
             with caplog.at_level(logging.WARNING):
                 logger.warning("Hello")
-        assert not caplog.records()
+        assert not caplog.records
 
     def test_filtered_start(self, logger, caplog):
         """Test a message which is filtered (match at line start)."""
         with log.hide_qt_warning("Hello", 'qt-tests'):
             with caplog.at_level(logging.WARNING):
                 logger.warning("Hello World")
-        assert not caplog.records()
+        assert not caplog.records
 
     def test_filtered_whitespace(self, logger, caplog):
         """Test a message which is filtered (match with whitespace)."""
         with log.hide_qt_warning("Hello", 'qt-tests'):
             with caplog.at_level(logging.WARNING):
                 logger.warning("  Hello World  ")
-        assert not caplog.records()
+        assert not caplog.records

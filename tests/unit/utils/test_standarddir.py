@@ -265,8 +265,8 @@ class TestInitCacheDirTag:
         mocker.patch('builtins.open', side_effect=OSError)
         with caplog.at_level(logging.ERROR):
             standarddir._init_cachedir_tag()
-        assert len(caplog.records()) == 1
-        assert caplog.records()[0].message == 'Failed to create CACHEDIR.TAG'
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message == 'Failed to create CACHEDIR.TAG'
         assert not tmpdir.listdir()
 
 

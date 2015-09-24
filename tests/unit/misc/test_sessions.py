@@ -823,6 +823,6 @@ class TestSessionDelete:
                 sess_man.session_delete('foo')
 
         assert str(excinfo.value).startswith('Error while deleting session: ')
-        records = caplog.records()
+        records = caplog.records
         assert len(records) == 1
         assert records[0].message == 'Error while deleting session!'

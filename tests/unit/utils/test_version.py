@@ -147,8 +147,8 @@ class TestGitStr:
         commit_file_mock.return_value = '0deadcode'
         with caplog.at_level(logging.ERROR):
             assert version._git_str() == '0deadcode'
-        assert len(caplog.records()) == 1
-        assert caplog.records()[0].message == "Error while getting git path"
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message == "Error while getting git path"
 
 
 def _has_git():
@@ -288,8 +288,8 @@ def test_release_info(files, expected, caplog, monkeypatch):
     with caplog.at_level(logging.ERROR):
         assert version._release_info() == expected
     if files is None:
-        assert len(caplog.records()) == 1
-        assert caplog.records()[0].message == "Error while reading fake-file."
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message == "Error while reading fake-file."
 
 
 class ImportFake:

@@ -41,7 +41,7 @@ def test_log_events(qapp, caplog):
     obj = EventObject()
     qapp.postEvent(obj, QEvent(QEvent.User))
     qapp.processEvents()
-    records = caplog.records()
+    records = caplog.records
     assert len(records) == 1
     assert records[0].msg == 'Event in test_debug.EventObject: User'
 
@@ -75,7 +75,7 @@ def test_log_signals(caplog, signal_obj):
     signal_obj.signal1.emit()
     signal_obj.signal2.emit('foo', 'bar')
 
-    records = caplog.records()
+    records = caplog.records
     assert len(records) == 2
     assert records[0].msg == 'Signal in <repr>: signal1()'
     assert records[1].msg == "Signal in <repr>: signal2('foo', 'bar')"
@@ -90,7 +90,7 @@ class TestLogTime:
             with debug.log_time(logger_name, action='foobar'):
                 time.sleep(0.1)
 
-            records = caplog.records()
+            records = caplog.records
             assert len(records) == 1
 
             pattern = re.compile(r'^Foobar took ([\d.]*) seconds\.$')
@@ -108,7 +108,7 @@ class TestLogTime:
             with debug.log_time(logging.getLogger(logger_name)):
                 pass
 
-        assert len(caplog.records()) == 1
+        assert len(caplog.records) == 1
 
     def test_decorator(self, caplog):
         logger_name = 'qt-tests'
@@ -121,7 +121,7 @@ class TestLogTime:
         with caplog.at_level(logging.DEBUG):
             func(1, kwarg=2)
 
-        records = caplog.records()
+        records = caplog.records
         assert len(records) == 1
         assert records[0].msg.startswith('Foo took')
 
