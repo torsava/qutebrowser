@@ -46,16 +46,14 @@ class LogFailHandler(logging.Handler):
         logger = logging.getLogger(record.name)
         root_logger = logging.getLogger()
 
+        caplog_handler = None
+
         for h in root_logger.handlers:
             if isinstance(h, catchlog_mod.RecordingHandler):
                 caplog_handler = h
                 break
-        else:
-            # The RecordingHandler is not available anymore during fixture
-            # teardown, so we ignore logging messages emitted there..
-            return
 
-        if (logger.level == record.levelno or
+        if (caplog_handler is not None and
                 caplog_handler.level == record.levelno):
             # caplog.at_level(...) was used with the level of this message, i.e.
             # it was expected.
