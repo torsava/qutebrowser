@@ -36,7 +36,7 @@ import subprocess
 testenv = os.environ['TESTENV']
 
 
-if 'TRAVIS' in os.environ:
+if 'TRAVIS' not in os.environ:
     def env(key):
         return os.environ.get(key, None)
     print("Unknown environment! (CI {}, APPVEYOR {}, TRAVIS {}, "
