@@ -20,7 +20,7 @@
 
 # pylint: skip-file
 
-"""Run tests on AppVeyor/Travis CI based on environment variables.
+"""Run tests on Travis CI based on environment variables.
 
 Note this file is written in python2 as this is more readily available on the
 CI machines.
@@ -36,22 +36,7 @@ import subprocess
 testenv = os.environ['TESTENV']
 
 
-if 'APPVEYOR' in os.environ:
-    raise Exception
-elif 'TRAVIS' in os.environ:
-    travis_os = os.environ['TRAVIS_OS_NAME']
-
-    if travis_os == 'linux' and testenv == 'py35':
-        raise Exception("Can't run py35 on Linux")
-    elif travis_os == 'osx' and testenv == 'py34':
-        raise Exception("Can't run py34 on OS X")
-
-    if testenv == 'py34' and travis_os == 'linux':
-        subprocess.check_call(['xvfb-run', '-s', '-screen 0 640x480x16',
-                               'tox', '-e', testenv])
-    else:
-        subprocess.check_call(['tox', '-e', testenv])
-else:
+if 'TRAVIS' in os.environ:
     def env(key):
         return os.environ.get(key, None)
     print("Unknown environment! (CI {}, APPVEYOR {}, TRAVIS {}, "
@@ -59,3 +44,17 @@ else:
                                       env('TRAVIS'), env('TRAVIS_OS_NAME')),
           file=sys.stderr)
     sys.exit(1)
+
+
+travis_os = os.environ['TRAVIS_OS_NAME']
+
+if travis_os == 'linux' and testenv == 'py35':
+    raise Exception("Can't run py35 on Linux")
+elif travis_os == 'osx' and testenv == 'py34':
+    raise Exception("Can't run py34 on OS X")
+
+if testenv == 'py34' and travis_os == 'linux':
+    subprocess.check_call(['xvfb-run', '-s', '-screen 0 640x480x16',
+                           'tox', '-e', testenv])
+else:
+    subprocess.check_call(['tox', '-e', testenv])
