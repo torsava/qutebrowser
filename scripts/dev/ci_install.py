@@ -39,6 +39,10 @@ except ImportError:
     winreg = None
 
 
+INSTALL_PYQT = int(os.environ['INSTALL_PYQT'])
+XVFB = int(os.environ['XVFB'])
+
+
 def apt_get(args):
     subprocess.check_call(['sudo', 'apt-get', '-y', '-q'] + args)
 
@@ -52,9 +56,10 @@ def brew(args, silent=False):
 
 
 def check_setup(executable):
-    print("Checking setup...")
-    subprocess.check_call([executable, '-c', 'import PyQt5'])
-    subprocess.check_call([executable, '-c', 'import sip'])
+    if INSTALL_PYQT:
+        print("Checking setup...")
+        subprocess.check_call([executable, '-c', 'import PyQt5'])
+        subprocess.check_call([executable, '-c', 'import sip'])
 
 
 if 'APPVEYOR' in os.environ:
@@ -86,9 +91,9 @@ elif os.environ.get('TRAVIS_OS_NAME', None) == 'linux':
 
     print("Installing packages...")
     pkgs = ['python-tox', 'python3-dev', 'libpython3.4-dev']
-    if int(os.environ['XVFB']):
+    if XVFB:
         pkgs.append('xvfb')
-    if int(os.environ['INSTALL_PYQT']):
+    if INSTALL_PYQT:
         pkgs += ['python3-pyqt5', 'python3-pyqt5.qtwebkit']
     apt_get(['install'] + pkgs)
     check_setup('python3')
@@ -98,7 +103,7 @@ elif os.environ.get('TRAVIS_OS_NAME', None) == 'osx':
 
     print("Installing packages...")
     pkgs = ['python3']
-    if int(os.environ['INSTALL_PYQT']):
+    if INSTALL_PYQT:
         pkgs.append('pyqt5')
     brew(['install'] + pkgs)
 
