@@ -59,4 +59,4 @@ matrix:
     - os: osx
       env: TESTENV=check-manifest
     - os: osx
-      env: env TESTENV=pylint
+      env: TESTENV=pylint
