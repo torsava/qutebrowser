@@ -35,3 +35,28 @@ install:
 
 script:
   - python scripts/dev/ci_run.py
+
+matrix:
+  exclude:
+    - os: linux
+      env: TESTENV=py35 XVFB=1 INSTALL_PYQT=1
+    - os: osx
+      env: TESTENV=py34 XVFB=1 INSTALL_PYQT=1
+    - os: osx
+      env: TESTENV=unittests-nodisp XVFB=0 INSTALL_PYQT=1
+    - os: osx
+      env: TESTENV=misc XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=pep257 XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=pyflakes XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=pep8 XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=mccabe XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=pyroma XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: TESTENV=check-manifest XVFB=0 INSTALL_PYQT=0
+    - os: osx
+      env: env TESTENV=pylint ON_OS=linux XVFB=0 INSTALL_PYQT=1
