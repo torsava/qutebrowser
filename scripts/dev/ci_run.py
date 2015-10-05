@@ -46,7 +46,7 @@ elif 'TRAVIS' in os.environ:
     elif travis_os == 'osx' and testenv == 'py34':
         raise Exception("Can't run py34 on OS X")
 
-    if testenv in ('py34', 'unittests-nodisp') and travis_os == 'linux':
+    if testenv == 'py34' and travis_os == 'linux':
         subprocess.check_call(['xvfb-run', '-s', '-screen 0 640x480x16',
                                'tox', '-e', testenv])
     else:

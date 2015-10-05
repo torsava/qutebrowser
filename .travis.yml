@@ -10,17 +10,17 @@ env:
   global:
     - PATH=/home/travis/bin:/home/travis/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   matrix:
-    - TESTENV=py35 XVFB=1 INSTALL_PYQT=1
-    - TESTENV=py34 XVFB=1 INSTALL_PYQT=1
-    - TESTENV=unittests-nodisp XVFB=0 INSTALL_PYQT=1
-    - TESTENV=misc XVFB=0 INSTALL_PYQT=0
-    - TESTENV=pep257 XVFB=0 INSTALL_PYQT=0
-    - TESTENV=pyflakes XVFB=0 INSTALL_PYQT=0
-    - TESTENV=pep8 XVFB=0 INSTALL_PYQT=0
-    - TESTENV=mccabe XVFB=0 INSTALL_PYQT=0
-    - TESTENV=pyroma XVFB=0 INSTALL_PYQT=0
-    - TESTENV=check-manifest XVFB=0 INSTALL_PYQT=0
-    - TESTENV=pylint ON_OS=linux XVFB=0 INSTALL_PYQT=1
+    - TESTENV=py35
+    - TESTENV=py34
+    - TESTENV=unittests-nodisp
+    - TESTENV=misc
+    - TESTENV=pep257
+    - TESTENV=pyflakes
+    - TESTENV=pep8
+    - TESTENV=mccabe
+    - TESTENV=pyroma
+    - TESTENV=check-manifest
+    - TESTENV=pylint
 
 # Not really, but this is here so we can do stuff by hand.
 language: c
@@ -39,24 +39,24 @@ script:
 matrix:
   exclude:
     - os: linux
-      env: TESTENV=py35 XVFB=1 INSTALL_PYQT=1
+      env: TESTENV=py35
     - os: osx
-      env: TESTENV=py34 XVFB=1 INSTALL_PYQT=1
+      env: TESTENV=py34
     - os: osx
-      env: TESTENV=unittests-nodisp XVFB=0 INSTALL_PYQT=1
+      env: TESTENV=unittests-nodisp
     - os: osx
-      env: TESTENV=misc XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=misc
     - os: osx
-      env: TESTENV=pep257 XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=pep257
     - os: osx
-      env: TESTENV=pyflakes XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=pyflakes
     - os: osx
-      env: TESTENV=pep8 XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=pep8
     - os: osx
-      env: TESTENV=mccabe XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=mccabe
     - os: osx
-      env: TESTENV=pyroma XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=pyroma
     - os: osx
-      env: TESTENV=check-manifest XVFB=0 INSTALL_PYQT=0
+      env: TESTENV=check-manifest
     - os: osx
-      env: env TESTENV=pylint ON_OS=linux XVFB=0 INSTALL_PYQT=1
+      env: env TESTENV=pylint

@@ -38,9 +38,11 @@ try:
 except ImportError:
     winreg = None
 
-
-INSTALL_PYQT = int(os.environ['INSTALL_PYQT'])
-XVFB = int(os.environ['XVFB'])
+TESTENV = os.environ['TESTENV']
+TRAVIS_OS = os.environ.get('TRAVIS_OS_NAME', None)
+INSTALL_PYQT = TESTENV in ('py34', 'py35', 'unittests-nodisp', 'misc',
+                           'pylint')
+XVFB = TRAVIS_OS == 'linux' and TESTENV == 'py34'
 
 
 def apt_get(args):
@@ -85,7 +87,7 @@ if 'APPVEYOR' in os.environ:
         f.write(r'@C:\Python34\python %*')
 
     check_setup(r'C:\Python34\python')
-elif os.environ.get('TRAVIS_OS_NAME', None) == 'linux':
+elif TRAVIS_OS == 'linux':
     print("apt-get update...")
     apt_get(['update'])
 
@@ -97,7 +99,7 @@ elif os.environ.get('TRAVIS_OS_NAME', None) == 'linux':
         pkgs += ['python3-pyqt5', 'python3-pyqt5.qtwebkit']
     apt_get(['install'] + pkgs)
     check_setup('python3')
-elif os.environ.get('TRAVIS_OS_NAME', None) == 'osx':
+elif TRAVIS_OS == 'osx':
     print("brew update...")
     brew(['update'], silent=True)
 
