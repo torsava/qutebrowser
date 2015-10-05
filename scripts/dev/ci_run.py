@@ -40,12 +40,11 @@ if 'APPVEYOR' in os.environ:
     raise Exception
 elif 'TRAVIS' in os.environ:
     travis_os = os.environ['TRAVIS_OS_NAME']
+
     if travis_os == 'linux' and testenv == 'py35':
-        print("Skipping py35 on Linux")
-        sys.exit(0)
+        raise Exception("Can't run py35 on Linux")
     elif travis_os == 'osx' and testenv == 'py34':
-        print("Skipping py34 on OS X")
-        sys.exit(0)
+        raise Exception("Can't run py34 on OS X")
 
     if testenv in ('py34', 'unittests-nodisp') and travis_os == 'linux':
         subprocess.check_call(['xvfb-run', '-s', '-screen 0 640x480x16',
