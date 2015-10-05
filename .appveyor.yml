@@ -15,5 +15,3 @@ install:
 
 test_script:
   - C:\Python34\Scripts\tox -e %TESTENV%
-  - C:\Python34\Scripts\tox -e unittests-frozen
-  - C:\Python34\Scripts\tox -e pylint
