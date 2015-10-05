@@ -85,8 +85,11 @@ elif os.environ.get('TRAVIS_OS_NAME', None) == 'linux':
     apt_get(['update'])
 
     print("Installing packages...")
-    pkgs = ['python3-pyqt5', 'python3-pyqt5.qtwebkit', 'python-tox',
-            'python3-dev', 'libpython3.4-dev', 'xvfb']
+    pkgs = ['python-tox', 'python3-dev', 'libpython3.4-dev']
+    if int(os.environ['XVFB']):
+        pkgs.append('xvfb')
+    if int(os.environ['INSTALL_PYQT']):
+        pkgs += ['python3-pyqt5', 'python3-pyqt5.qtwebkit']
     apt_get(['install'] + pkgs)
     check_setup('python3')
 elif os.environ.get('TRAVIS_OS_NAME', None) == 'osx':
@@ -94,7 +97,10 @@ elif os.environ.get('TRAVIS_OS_NAME', None) == 'osx':
     brew(['update'], silent=True)
 
     print("Installing packages...")
-    brew(['install', 'python3', 'pyqt5'])
+    pkgs = ['python3']
+    if int(os.environ['INSTALL_PYQT']):
+        pkgs.append('pyqt5')
+    brew(['install'] + pkgs)
 
     print("Installing tox...")
     subprocess.check_call(['sudo', 'pip3', 'install', 'tox'])
