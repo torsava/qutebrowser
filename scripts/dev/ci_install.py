@@ -100,7 +100,7 @@ elif TRAVIS_OS == 'linux':
     if INSTALL_PYQT:
         pkgs += ['python3-pyqt5', 'python3-pyqt5.qtwebkit']
     if TESTENV == 'eslint':
-        pkgs.append('npm')
+        pkgs += ['npm', 'nodejs']
 
     if pkgs:
         print("apt-get update...")
