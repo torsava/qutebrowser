@@ -128,6 +128,7 @@ elif TRAVIS_OS == 'osx':
     print("Installing packages...")
     brew(['install', 'python3'])
     if INSTALL_PYQT:
+        brew(['install', 'qt5', 'sip'])
         brew(['install', 'pyqt5', '--build-from-source'])
 
     print("Installing tox...")
