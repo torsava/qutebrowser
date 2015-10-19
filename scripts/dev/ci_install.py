@@ -118,7 +118,7 @@ elif TRAVIS_OS == 'osx':
     brew(['update'], silent=True)
 
     print("Patching PyQt formula...")
-    brew_path = subprocess.check_output(['brew', '--prefix'])
+    brew_path = subprocess.check_output(['brew', '--prefix']).strip()
     pyqt_file = os.path.join(brew_path, 'Library', 'Formula', 'pyqt5.rb')
     os.remove(pyqt_file)
     urllib.urlretrieve(
