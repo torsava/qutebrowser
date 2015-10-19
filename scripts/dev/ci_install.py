@@ -122,7 +122,7 @@ elif TRAVIS_OS == 'osx':
     pyqt_file = os.path.join(brew_path, 'Library', 'Formula', 'pyqt5.rb')
     os.remove(pyqt_file)
     urllib.urlretrieve(
-        'https://raw.githubusercontent.com/UniqMartin/homebrew/0f78553c1cfc26963ea0681374e50b378207f875/Library/Formula/pyqt5.rb',
+        'https://raw.githubusercontent.com/UniqMartin/homebrew/023a20a7959680952d166beca66d2995439d4540/Library/Formula/pyqt5.rb',
         pyqt_file)
 
     print("Installing packages...")
