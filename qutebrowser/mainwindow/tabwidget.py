@@ -354,6 +354,7 @@ class TabBar(QTabBar):
         Return:
             A QSize.
         """
+        raise Exception
         icon = self.tabIcon(index)
         padding = config.get('tabs', 'padding')
         padding_h = padding.left + padding.right
