@@ -11,19 +11,19 @@ env:
   global:
     - PATH=/home/travis/bin:/home/travis/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   matrix:
-    - TESTENV=py35
+      #- TESTENV=py35
     - TESTENV=py34
     - TESTENV=unittests-nodisp
-    - TESTENV=misc
-    - TESTENV=vulture
-    - TESTENV=pep257
-    - TESTENV=pyflakes
-    - TESTENV=pep8
-    - TESTENV=mccabe
-    - TESTENV=pyroma
-    - TESTENV=check-manifest
-    - TESTENV=pylint
-    - TESTENV=eslint
+      #- TESTENV=misc
+      #- TESTENV=vulture
+      #- TESTENV=pep257
+      #- TESTENV=pyflakes
+      #- TESTENV=pep8
+      #- TESTENV=mccabe
+      #- TESTENV=pyroma
+      #- TESTENV=check-manifest
+      #- TESTENV=pylint
+      #- TESTENV=eslint
 
 # Not really, but this is here so we can do stuff by hand.
 language: c
