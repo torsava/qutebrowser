@@ -20,6 +20,7 @@
 """Steps for bdd-like tests."""
 
 import re
+import time
 import logging
 
 import yaml
@@ -82,6 +83,12 @@ def wait_in_log(quteproc, is_regex, pattern):
                          r'"(?P<message>.*)"'))
 def wait_for_message(quteproc, httpbin, category, message):
     expect_error(quteproc, httpbin, category, message)
+
+
+@bdd.when(bdd.parsers.parse("I wait {seconds:float}s",
+                            extra_types={'float': float}))
+def sleep(seconds):
+    time.sleep(seconds)
 
 
 @bdd.then(bdd.parsers.parse("{path} should be loaded"))
