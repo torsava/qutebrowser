@@ -88,6 +88,8 @@ if 'APPVEYOR' in os.environ:
 
     print("Installing tox...")
     subprocess.check_call([r'C:\Python34\Scripts\pip', 'install', '-U'] +
+                          'pip')
+    subprocess.check_call([r'C:\Python34\Scripts\pip', 'install', '-U'] +
                           pip_packages)
 
     print("Linking Python...")
@@ -98,6 +100,7 @@ if 'APPVEYOR' in os.environ:
 elif TRAVIS_OS == 'linux':
     print("travis_fold:start:ci_install")
     print("Installing via pip...")
+    subprocess.check_call(['sudo', 'pip', 'install', '-U', 'pip'])
     subprocess.check_call(['sudo', 'pip', 'install'] + pip_packages)
 
     print("Installing packages...")
@@ -143,6 +146,7 @@ elif TRAVIS_OS == 'osx':
     brew(['install'] + pkgs)
 
     print("Installing tox/codecov...")
+    subprocess.check_call(['sudo', 'pip3', 'install', '-U', 'pip'])
     subprocess.check_call(['sudo', 'pip3', 'install'] + pip_packages)
 
     check_setup('python3')
