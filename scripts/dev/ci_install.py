@@ -50,6 +50,7 @@ if TESTENV.endswith('-cov'):
     pip_packages.append('codecov')
 
 
+@contextlib.contextmanager
 def travis_fold(text):
     if 'TRAVIS' in os.environ:
         marker = re.compile(r'\W+').sub('-', text.lower()).strip('-')
