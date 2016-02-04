@@ -33,6 +33,7 @@ import re
 import sys
 import subprocess
 import urllib
+import contextlib
 
 try:
     import _winreg as winreg
@@ -49,13 +50,21 @@ if TESTENV.endswith('-cov'):
     pip_packages.append('codecov')
 
 
+def travis_fold(text):
+    if 'TRAVIS' in os.environ:
+        marker = re.compile(r'\W+').sub('-', text.lower()).strip('-')
+        print("travis_fold:start:{}".format(marker))
+        yield
+        print("travis_fold:end:{}".format(marker))
+    else:
+        yield
+
+
 def folded_cmd(argv):
     """Output a command with travis folding markers."""
-    marker = re.compile(r'\W+').sub('-', ''.join(argv).lower()).strip('-')
-    print("travis_fold:start:{}".format(marker))
-    print("  $ " + ' '.join(argv))
-    subprocess.check_call(argv)
-    print("travis_fold:end:{}".format(marker))
+    with travis_fold(''.join(argv)):
+        print("  $ " + ' '.join(argv))
+        subprocess.check_call(argv)
 
 
 def fix_sources_list():
