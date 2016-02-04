@@ -53,7 +53,7 @@ def folded_cmd(argv):
     """Output a command with travis folding markers."""
     marker = re.compile(r'\W+').sub('-', ''.join(argv).lower()).strip('-')
     print("travis_fold:start:{}".format(marker))
-    print("$ " + ' '.join(argv))
+    print("  $ " + ' '.join(argv))
     subprocess.check_call(argv)
     print("travis_fold:end:{}".format(marker))
 
@@ -69,7 +69,7 @@ def apt_get(args):
 
 
 def brew(args):
-    folded_cmd(['brew'] + args + ['--verbose'])
+    folded_cmd(['brew'] + args)
 
 
 def check_setup(executable):
@@ -123,7 +123,6 @@ elif TRAVIS_OS == 'linux':
         apt_get(['install'] + pkgs)
 
     if TESTENV == 'flake8':
-        print("Installing via apt-get...")
         fix_sources_list()
         apt_get(['update'])
         # We need an up-to-date Python because of:
@@ -143,7 +142,7 @@ elif TRAVIS_OS == 'osx':
     pkgs = ['python3']
     if INSTALL_PYQT:
         pkgs.append('pyqt5')
-    brew(['install'] + pkgs)
+    brew(['install', '--verbose'] + pkgs)
 
     folded_cmd(['sudo', 'pip3', 'install'] + pip_packages)
 
