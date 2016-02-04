@@ -33,7 +33,7 @@ cache:
 
 install:
   # the default mirror used by Travis has trouble a lot...
-  - sed -i 's/us-central1\.gce/us/' /etc/apt/sources.list
+  - sudo sed -i 's/us-central1\.gce/us/' /etc/apt/sources.list
   - python scripts/dev/ci_install.py
 
 script:
