@@ -32,6 +32,8 @@ cache:
     - $HOME/build/The-Compiler/qutebrowser/.cache
 
 install:
+  # the default mirror used by Travis has trouble a lot...
+  - sed -i 's/us-central1\.gce/us/' /etc/apt/sources.list
   - python scripts/dev/ci_install.py
 
 script:
