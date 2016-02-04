@@ -55,6 +55,7 @@ def fix_sources_list():
 
 
 def apt_get(args):
+    print("---> apt-get {}".format(' '.join(args)))
     subprocess.check_call(['sudo', 'apt-get', '-y', '-q'] + args)
 
 
@@ -102,11 +103,11 @@ if 'APPVEYOR' in os.environ:
 
     check_setup(r'C:\Python34\python')
 elif TRAVIS_OS == 'linux':
-    print("travis_fold:start:ci_install")
+    print("travis_fold:start:pip_install")
     print("Installing via pip...")
     subprocess.check_call(['sudo', 'pip', 'install'] + pip_packages)
+    print("travis_fold:end:pip_install")
 
-    print("Installing packages...")
     pkgs = []
 
     if XVFB:
@@ -117,26 +118,30 @@ elif TRAVIS_OS == 'linux':
         pkgs += ['npm', 'nodejs', 'nodejs-legacy']
 
     if pkgs:
+        print("travis_fold:start:apt_install")
+        print("Installing via apt-get...")
         fix_sources_list()
-        print("apt-get update...")
         apt_get(['update'])
-        print("apt-get install...")
         apt_get(['install'] + pkgs)
+        print("travis_fold:end:apt_install")
 
     if TESTENV == 'flake8':
+        print("travis_fold:start:apt_install")
+        print("Installing via apt-get...")
         fix_sources_list()
-        print("apt-get update...")
         apt_get(['update'])
         # We need an up-to-date Python because of:
         # https://github.com/google/yapf/issues/46
-        print("Updating Python...")
         apt_get(['install', '-t', 'trusty-updates', 'python3.4'])
+        print("travis_fold:end:apt_install")
 
     if TESTENV == 'eslint':
+        print("travis_fold:start:npm_install")
+        print("Installing via npm...")
         subprocess.check_call(['sudo', 'npm', 'install', '-g', 'eslint'])
+        print("travis_fold:end:npm_install")
     else:
         check_setup('python3')
-    print("travis_fold:end:ci_install")
 elif TRAVIS_OS == 'osx':
     print("Disabling App Nap...")
     subprocess.check_call(['defaults', 'write', 'NSGlobalDomain',
