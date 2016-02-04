@@ -48,6 +48,15 @@ if TESTENV.endswith('-cov'):
     pip_packages.append('codecov')
 
 
+def folded_cmd(argv):
+    """Output a command with travis folding markers."""
+    marker = re.compile(r'\W+').sub('-', ''.join(argv).lower()).strip('-')
+    print("travis_fold:start:{}".format(marker))
+    print("$ " + ' '.join(argv))
+    subprocess.check_call(argv)
+    print("travis_fold:end:{}".format(marker))
+
+
 def fix_sources_list():
     """The mirror used by Travis has trouble a lot, so switch to another."""
     subprocess.check_call(['sudo', 'sed', '-i', r's/us-central1\.gce/us/',
@@ -55,16 +64,11 @@ def fix_sources_list():
 
 
 def apt_get(args):
-    print("---> apt-get {}".format(' '.join(args)))
-    subprocess.check_call(['sudo', 'apt-get', '-y', '-q'] + args)
+    folded_cmd(['sudo', 'apt-get', '-y', '-q'] + args)
 
 
-def brew(args, silent=False):
-    if silent:
-        with open(os.devnull, 'w') as f:
-            subprocess.check_call(['brew'] + args, stdout=f)
-    else:
-        subprocess.check_call(['brew'] + args + ['--verbose'])
+def brew(args):
+    folded_cmd(['brew'] + args + ['--verbose'])
 
 
 def check_setup(executable):
@@ -93,9 +97,7 @@ if 'APPVEYOR' in os.environ:
     print("Installing PyQt5...")
     subprocess.check_call([r'C:\install-PyQt5.exe', '/S'])
 
-    print("Installing tox...")
-    subprocess.check_call([r'C:\Python34\Scripts\pip', 'install', '-U'] +
-                          pip_packages)
+    folded_cmd([r'C:\Python34\Scripts\pip', 'install', '-U'] + pip_packages)
 
     print("Linking Python...")
     with open(r'C:\Windows\system32\python3.bat', 'w') as f:
@@ -103,10 +105,7 @@ if 'APPVEYOR' in os.environ:
 
     check_setup(r'C:\Python34\python')
 elif TRAVIS_OS == 'linux':
-    print("travis_fold:start:pip_install")
-    print("Installing via pip...")
-    subprocess.check_call(['sudo', 'pip', 'install'] + pip_packages)
-    print("travis_fold:end:pip_install")
+    folded_cmd(['sudo', 'pip', 'install'] + pip_packages)
 
     pkgs = []
 
@@ -118,45 +117,34 @@ elif TRAVIS_OS == 'linux':
         pkgs += ['npm', 'nodejs', 'nodejs-legacy']
 
     if pkgs:
-        print("travis_fold:start:apt_install")
-        print("Installing via apt-get...")
         fix_sources_list()
         apt_get(['update'])
         apt_get(['install'] + pkgs)
-        print("travis_fold:end:apt_install")
 
     if TESTENV == 'flake8':
-        print("travis_fold:start:apt_install")
         print("Installing via apt-get...")
         fix_sources_list()
         apt_get(['update'])
         # We need an up-to-date Python because of:
         # https://github.com/google/yapf/issues/46
         apt_get(['install', '-t', 'trusty-updates', 'python3.4'])
-        print("travis_fold:end:apt_install")
 
     if TESTENV == 'eslint':
-        print("travis_fold:start:npm_install")
-        print("Installing via npm...")
-        subprocess.check_call(['sudo', 'npm', 'install', '-g', 'eslint'])
-        print("travis_fold:end:npm_install")
+        folded_cmd(['sudo', 'npm', 'install', '-g', 'eslint'])
     else:
         check_setup('python3')
 elif TRAVIS_OS == 'osx':
     print("Disabling App Nap...")
     subprocess.check_call(['defaults', 'write', 'NSGlobalDomain',
                            'NSAppSleepDisabled', '-bool', 'YES'])
-    print("brew update...")
-    brew(['update'], silent=True)
+    brew(['update'])
 
-    print("Installing packages...")
     pkgs = ['python3']
     if INSTALL_PYQT:
         pkgs.append('pyqt5')
     brew(['install'] + pkgs)
 
-    print("Installing tox/codecov...")
-    subprocess.check_call(['sudo', 'pip3', 'install'] + pip_packages)
+    folded_cmd(['sudo', 'pip3', 'install'] + pip_packages)
 
     check_setup('python3')
 else:
